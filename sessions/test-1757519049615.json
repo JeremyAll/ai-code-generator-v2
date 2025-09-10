@@ -1,0 +1,18 @@
+{
+  "id": "test-1757519049615",
+  "startTime": "2025-09-10T15:44:09.615Z",
+  "lastActivity": "2025-09-10T15:44:09.615Z",
+  "generationCount": 0,
+  "preferences": {
+    "favoriteFrameworks": [],
+    "favoriteStyles": [
+      "tailwindcss"
+    ],
+    "complexityPreference": "medium",
+    "domainExpertise": {},
+    "frequentFeatures": {},
+    "qualityThreshold": 70,
+    "generationSpeed": "balanced"
+  },
+  "history": []
+}

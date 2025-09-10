@@ -1,0 +1,52 @@
+{
+  "id": "2025-09-10-19-59-22",
+  "startTime": "2025-09-10T17:59:22.695Z",
+  "lastActivity": "2025-09-10T18:01:16.732Z",
+  "generationCount": 1,
+  "preferences": {
+    "favoriteFrameworks": [],
+    "favoriteStyles": [
+      "tailwindcss"
+    ],
+    "complexityPreference": "medium",
+    "domainExpertise": {
+      "blog": 0.1
+    },
+    "frequentFeatures": {},
+    "qualityThreshold": 70,
+    "generationSpeed": "balanced"
+  },
+  "history": [
+    {
+      "timestamp": "2025-09-10T18:01:16.732Z",
+      "prompt": "",
+      "analysis": {
+        "intent": "build_blog_cms",
+        "domain": "blog",
+        "confidence": 0.95,
+        "entities": [
+          {
+            "type": "complexity",
+            "value": "simple",
+            "confidence": 0.7
+          },
+          {
+            "type": "target",
+            "value": "small-business",
+            "confidence": 0.6
+          }
+        ],
+        "complexity": "simple",
+        "targetAudience": "small-business",
+        "keyFeatures": [],
+        "techPreferences": []
+      },
+      "result": {
+        "success": true,
+        "score": 100,
+        "duration": 114042,
+        "files": 17
+      }
+    }
+  ]
+}

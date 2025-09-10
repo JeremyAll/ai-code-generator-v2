@@ -1,0 +1,137 @@
+{
+  "id": "test-context-1757519049625",
+  "startTime": "2025-09-10T15:44:09.626Z",
+  "lastActivity": "2025-09-10T15:44:09.630Z",
+  "generationCount": 3,
+  "preferences": {
+    "favoriteFrameworks": [],
+    "favoriteStyles": [
+      "tailwindcss"
+    ],
+    "complexityPreference": "medium",
+    "domainExpertise": {
+      "saas": 0.2,
+      "app": 0.1
+    },
+    "frequentFeatures": {
+      "analytics": 1,
+      "admin_dashboard": 1,
+      "authentication": 1
+    },
+    "qualityThreshold": 70,
+    "generationSpeed": "balanced"
+  },
+  "history": [
+    {
+      "timestamp": "2025-09-10T15:44:09.627Z",
+      "prompt": "Dashboard metrics avec charts interactifs",
+      "analysis": {
+        "intent": "build_saas_application",
+        "domain": "saas",
+        "confidence": 0.95,
+        "entities": [
+          {
+            "type": "feature",
+            "value": "analytics",
+            "confidence": 0.8
+          },
+          {
+            "type": "complexity",
+            "value": "medium",
+            "confidence": 0.7
+          },
+          {
+            "type": "target",
+            "value": "small-business",
+            "confidence": 0.6
+          }
+        ],
+        "complexity": "medium",
+        "targetAudience": "small-business",
+        "keyFeatures": [
+          "analytics"
+        ],
+        "techPreferences": []
+      },
+      "result": {
+        "success": true,
+        "duration": 45000,
+        "files": 15
+      }
+    },
+    {
+      "timestamp": "2025-09-10T15:44:09.628Z",
+      "prompt": "Système complexe multi-tenant avec authentification",
+      "analysis": {
+        "intent": "build_saas_application",
+        "domain": "saas",
+        "confidence": 0.95,
+        "entities": [
+          {
+            "type": "feature",
+            "value": "admin_dashboard",
+            "confidence": 0.8
+          },
+          {
+            "type": "complexity",
+            "value": "complex",
+            "confidence": 0.7
+          },
+          {
+            "type": "target",
+            "value": "small-business",
+            "confidence": 0.6
+          }
+        ],
+        "complexity": "complex",
+        "targetAudience": "small-business",
+        "keyFeatures": [
+          "admin_dashboard"
+        ],
+        "techPreferences": []
+      },
+      "result": {
+        "success": true,
+        "duration": 38000,
+        "files": 18
+      }
+    },
+    {
+      "timestamp": "2025-09-10T15:44:09.630Z",
+      "prompt": "",
+      "analysis": {
+        "intent": "build_web_application",
+        "domain": "app",
+        "confidence": 0.3,
+        "entities": [
+          {
+            "type": "feature",
+            "value": "authentication",
+            "confidence": 0.8
+          },
+          {
+            "type": "complexity",
+            "value": "enterprise",
+            "confidence": 0.7
+          },
+          {
+            "type": "target",
+            "value": "enterprise",
+            "confidence": 0.6
+          }
+        ],
+        "complexity": "enterprise",
+        "targetAudience": "enterprise",
+        "keyFeatures": [
+          "authentication"
+        ],
+        "techPreferences": []
+      },
+      "result": {
+        "success": false,
+        "duration": 60000,
+        "files": 8
+      }
+    }
+  ]
+}

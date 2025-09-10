@@ -1,0 +1,122 @@
+[
+  {
+    "id": "Low Success Rate-1757519784201",
+    "timestamp": "2025-09-10T15:56:24.201Z",
+    "severity": "warning",
+    "category": "quality",
+    "title": "Low Success Rate",
+    "description": "Taux de succès faible: 0%",
+    "metrics": {
+      "averageScore": 0,
+      "successRate": 0
+    },
+    "threshold": 0.8,
+    "currentValue": 0,
+    "resolved": false
+  },
+  {
+    "id": "Poor Quality Score-1757519784202",
+    "timestamp": "2025-09-10T15:56:24.202Z",
+    "severity": "warning",
+    "category": "quality",
+    "title": "Poor Quality Score",
+    "description": "Score qualité faible: 0%",
+    "metrics": {
+      "averageScore": 0,
+      "successRate": 0
+    },
+    "threshold": 70,
+    "currentValue": 0,
+    "resolved": false
+  },
+  {
+    "id": "Low Success Rate-1757519787837",
+    "timestamp": "2025-09-10T15:56:27.837Z",
+    "severity": "warning",
+    "category": "quality",
+    "title": "Low Success Rate",
+    "description": "Taux de succès faible: 0%",
+    "metrics": {
+      "averageScore": 0,
+      "successRate": 0
+    },
+    "threshold": 0.8,
+    "currentValue": 0,
+    "resolved": false
+  },
+  {
+    "id": "Poor Quality Score-1757519787838",
+    "timestamp": "2025-09-10T15:56:27.838Z",
+    "severity": "warning",
+    "category": "quality",
+    "title": "Poor Quality Score",
+    "description": "Score qualité faible: 0%",
+    "metrics": {
+      "averageScore": 0,
+      "successRate": 0
+    },
+    "threshold": 70,
+    "currentValue": 0,
+    "resolved": false
+  },
+  {
+    "id": "Low Success Rate-1757520161153",
+    "timestamp": "2025-09-10T16:02:41.153Z",
+    "severity": "warning",
+    "category": "quality",
+    "title": "Low Success Rate",
+    "description": "Taux de succès faible: 0%",
+    "metrics": {
+      "averageScore": 0,
+      "successRate": 0
+    },
+    "threshold": 0.8,
+    "currentValue": 0,
+    "resolved": false
+  },
+  {
+    "id": "Poor Quality Score-1757520161154",
+    "timestamp": "2025-09-10T16:02:41.154Z",
+    "severity": "warning",
+    "category": "quality",
+    "title": "Poor Quality Score",
+    "description": "Score qualité faible: 0%",
+    "metrics": {
+      "averageScore": 0,
+      "successRate": 0
+    },
+    "threshold": 70,
+    "currentValue": 0,
+    "resolved": false
+  },
+  {
+    "id": "Low Success Rate-1757520166729",
+    "timestamp": "2025-09-10T16:02:46.729Z",
+    "severity": "warning",
+    "category": "quality",
+    "title": "Low Success Rate",
+    "description": "Taux de succès faible: 0%",
+    "metrics": {
+      "averageScore": 0,
+      "successRate": 0
+    },
+    "threshold": 0.8,
+    "currentValue": 0,
+    "resolved": false
+  },
+  {
+    "id": "Poor Quality Score-1757520166731",
+    "timestamp": "2025-09-10T16:02:46.731Z",
+    "severity": "warning",
+    "category": "quality",
+    "title": "Poor Quality Score",
+    "description": "Score qualité faible: 0%",
+    "metrics": {
+      "averageScore": 0,
+      "successRate": 0
+    },
+    "threshold": 70,
+    "currentValue": 0,
+    "resolved": false
+  }
+]

@@ -1,0 +1,52 @@
+{
+  "sessionId": "test-session-1757347146702",
+  "step": 2,
+  "timestamp": "[2025-09-08T15:59:06.726Z]",
+  "userInput": "Develop a learning platform for students with courses, progress tracking, and gamification",
+  "architecture": {
+    "projectName": "Test App",
+    "description": "Application générée pour test",
+    "techStack": [
+      "React",
+      "TypeScript",
+      "Next.js",
+      "Tailwind CSS"
+    ],
+    "fileStructure": [
+      {
+        "path": "app/layout.tsx",
+        "type": "file",
+        "description": "Root layout"
+      },
+      {
+        "path": "app/page.tsx",
+        "type": "file",
+        "description": "Homepage"
+      },
+      {
+        "path": "components/ui/",
+        "type": "directory",
+        "description": "UI components"
+      }
+    ],
+    "dependencies": {
+      "next": "^14.0.0",
+      "react": "^18.0.0",
+      "typescript": "^5.0.0",
+      "tailwindcss": "^3.4.0"
+    },
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start"
+    }
+  },
+  "prompt": "# ÉTAPE 2 : GÉNÉRATION AVEC ANIMATIONS PREMIUM GARANTIES\n\nArchitecture reçue : \n{\n  \"projectName\": \"Test App\",\n  \"description\": \"Application générée pour test\",\n  \"techStack\": [\n    \"React\",\n    \"TypeScript\",\n    \"Next.js\",\n    \"Tailwind CSS\"\n  ],\n  \"fileStructure\": [\n    {\n      \"path\": \"app/layout.tsx\",\n      \"type\": \"file\",\n      \"description\": \"Root layout\"\n    },\n    {\n      \"path\": \"app/page.tsx\",\n      \"type\": \"file\",\n      \"description\": \"Homepage\"\n    },\n    {\n      \"path\": \"components/...",
+  "response": "\n// Fichier: app/layout.tsx\nexport default function Layout({ children }) {\n  return <html><body>{children}</body></html>\n}\n\n// Fichier: app/page.tsx\nexport default function Home() {\n  return <Card3D><h1>Welcome to Test App</h1></Card3D>\n}\n...",
+  "success": true,
+  "duration": 1647,
+  "metadata": {
+    "version": "1.0",
+    "model": "claude-sonnet-4-20250514"
+  }
+}

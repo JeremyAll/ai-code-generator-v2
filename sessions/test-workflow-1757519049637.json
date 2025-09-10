@@ -1,0 +1,82 @@
+{
+  "id": "test-workflow-1757519049637",
+  "startTime": "2025-09-10T15:44:09.637Z",
+  "lastActivity": "2025-09-10T15:44:09.640Z",
+  "generationCount": 2,
+  "preferences": {
+    "favoriteFrameworks": [],
+    "favoriteStyles": [
+      "tailwindcss"
+    ],
+    "complexityPreference": "medium",
+    "domainExpertise": {
+      "saas": 0.1,
+      "app": 0.1
+    },
+    "frequentFeatures": {},
+    "qualityThreshold": 70,
+    "generationSpeed": "balanced"
+  },
+  "history": [
+    {
+      "timestamp": "2025-09-10T15:44:09.638Z",
+      "prompt": "Site e-commerce minimaliste avec paiements simples",
+      "analysis": {
+        "intent": "build_saas_application",
+        "domain": "saas",
+        "confidence": 0.95,
+        "entities": [
+          {
+            "type": "complexity",
+            "value": "medium",
+            "confidence": 0.7
+          },
+          {
+            "type": "target",
+            "value": "small-business",
+            "confidence": 0.6
+          }
+        ],
+        "complexity": "medium",
+        "targetAudience": "small-business",
+        "keyFeatures": [],
+        "techPreferences": []
+      },
+      "result": {
+        "success": true,
+        "duration": 35000,
+        "files": 14
+      }
+    },
+    {
+      "timestamp": "2025-09-10T15:44:09.640Z",
+      "prompt": "",
+      "analysis": {
+        "intent": "build_web_application",
+        "domain": "app",
+        "confidence": 0.3,
+        "entities": [
+          {
+            "type": "complexity",
+            "value": "simple",
+            "confidence": 0.7
+          },
+          {
+            "type": "target",
+            "value": "small-business",
+            "confidence": 0.6
+          }
+        ],
+        "complexity": "simple",
+        "targetAudience": "small-business",
+        "keyFeatures": [],
+        "techPreferences": []
+      },
+      "result": {
+        "success": true,
+        "duration": 35000,
+        "files": 14
+      }
+    }
+  ]
+}

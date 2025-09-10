@@ -1,0 +1,62 @@
+{
+  "name": "app-generator-workflow",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-powered application generation workflow",
+  "main": "dist/cli.js",
+  "bin": {
+    "appgen": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "dev": "ts-node src/cli.ts",
+    "cli": "ts-node src/cli.ts",
+    "generate": "ts-node src/cli.ts generate",
+    "clean:old": "node scripts/clean.js --days=7",
+    "clean:all": "rm -rf generated-apps/* logs/generations/*",
+    "backup": "node scripts/backup.js",
+    "logs": "tail -f logs/generations/latest.log",
+    "logs:errors": "tail -f logs/errors/errors.log",
+    "reset": "node scripts/reset.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "ai",
+    "app-generation",
+    "workflow",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.61.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.0.0",
+    "@types/puppeteer": "^5.4.7",
+    "archiver": "^7.0.1",
+    "chalk": "^4.1.2",
+    "commander": "^14.0.0",
+    "dotenv": "^16.0.0",
+    "fs-extra": "^11.0.0",
+    "inquirer": "^12.9.4",
+    "moment": "^2.29.0",
+    "ora": "^5.4.1",
+    "puppeteer": "^24.19.0",
+    "typescript": "^5.0.0",
+    "unsplash-js": "^7.0.19",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.0",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
