@@ -1,0 +1,54 @@
+{
+  "name": "architect-template",
+  "version": "1.0.0",
+  "description": "Template pour l'analyse d'architecture par l'IA architecte",
+  "variables": [
+    {
+      "name": "userPrompt",
+      "type": "string",
+      "required": true,
+      "description": "Le prompt utilisateur à analyser"
+    },
+    {
+      "name": "projectName",
+      "type": "string",
+      "required": true,
+      "description": "Nom du projet à générer"
+    },
+    {
+      "name": "targetDomain",
+      "type": "string",
+      "required": false,
+      "defaultValue": "auto",
+      "description": "Domaine cible si déjà connu"
+    },
+    {
+      "name": "complexity",
+      "type": "string",
+      "required": false,
+      "defaultValue": "medium",
+      "description": "Complexité souhaitée: simple, medium, complex, enterprise"
+    },
+    {
+      "name": "includePremiumFeatures",
+      "type": "boolean",
+      "required": false,
+      "defaultValue": true,
+      "description": "Inclure les features premium wow"
+    },
+    {
+      "name": "customDomains",
+      "type": "array",
+      "required": false,
+      "defaultValue": [],
+      "description": "Domaines personnalisés supplémentaires"
+    }
+  ],
+  "template": "# ÉTAPE 1 : ARCHITECTE - ANALYSE EXHAUSTIVE\n\nTu analyses un prompt utilisateur et génères une architecture PRÉCISE et ADAPTÉE.\n\n**Prompt utilisateur :** {{userPrompt}}\n**Projet :** {{projectName}}\n**Complexité demandée :** {{complexity}}\n**Timestamp :** {{timestamp}}\n\n## ANALYSE CONTEXTUELLE\n\nDétermine avec précision :\n1. **Scope demandé** : landing (5-8 pages) | dashboard (interface app) | full_app (15+ pages) | platform (30+ pages)\n2. **Domaine principal** : {{#if targetDomain}}Focus sur {{targetDomain}}{{else}}Identifie parmi la liste exhaustive ci-dessous{{/if}}\n3. **Utilisateurs cibles** : B2C, B2B, B2B2C, interne, mixte\n4. **Complexité souhaitée** : {{complexity}}\n\n## DOMAINES EXHAUSTIFS\n\n```yaml\n# Business & SaaS\n- saas_analytics      # Dashboards, KPIs, rapports\n- saas_productivity   # Gestion projets, tâches, workflow\n- saas_communication  # Chat, video, collaboration\n- saas_crm           # Relation client, ventes, pipeline\n- saas_hrtech        # RH, recrutement, paie, talents\n\n# Commerce & Marketplace  \n- ecommerce_b2c      # Boutique en ligne classique\n- ecommerce_b2b      # Wholesale, commandes pro\n- marketplace_goods   # Multi-vendeurs produits\n- marketplace_services # Services, freelances, gigs\n- marketplace_rental  # Location (immobilier, véhicules)\n\n# Finance & Legal\n- fintech_banking    # Néobanque, comptes, cartes\n- fintech_payment    # Paiements, facturation, checkout\n- fintech_trading    # Investissement, crypto, bourse\n- fintech_lending    # Prêts, crédit, crowdfunding\n- legaltech_contracts # Contrats, signatures, documents\n- legaltech_compliance # Conformité, RGPD, audit\n\n# Santé & Bien-être\n- health_medical     # Cliniques, hôpitaux, consultations\n- health_wellness    # Bien-être, fitness, nutrition\n- health_mental      # Santé mentale, thérapie, méditation\n- health_pharma      # Pharmacie, médicaments, ordonnances\n\n# Éducation & Formation\n- edtech_school      # Scolaire, CP-Terminale\n- edtech_higher      # Universitaire, grandes écoles\n- edtech_professional # Formation pro, certifications\n- edtech_skills      # Compétences, langues, hobbies\n\n# Industries spécifiques\n- proptech           # Immobilier (gestion, location, vente)\n- insurtech          # Assurances (auto, santé, vie)\n- agritech           # Agriculture, fermes, supply chain\n- logistics          # Transport, livraison, tracking\n- manufacturing      # Production, maintenance, qualité\n- hospitality        # Hôtels, restaurants, tourisme\n\n# Media & Entertainment\n- content_streaming  # Video, musique, podcasts\n- content_publishing # Blog, news, magazines\n- content_creation   # Créateurs, influenceurs, artistes\n- gaming            # Jeux, esports, communautés\n\n# Social & Community\n- social_network     # Réseaux sociaux, feed, stories\n- social_dating      # Rencontres, matching\n- social_events      # Événements, meetups, billetterie\n- community_forum    # Forums, discussions, Q&A\n\n# Services professionnels\n- agency_marketing   # Marketing, pub, digital\n- agency_design      # Design, UX, branding\n- consulting         # Conseil, audit, stratégie\n- freelance_platform # Freelances, missions, talents\n{{#each customDomains}}\n- {{this}}           # Domaine personnalisé\n{{/each}}\n```\n\n## GÉNÉRATION D'ARCHITECTURE ADAPTÉE\n\n```yaml\n# ARCHITECTURE APP\nmetadata:\n  name: [nom intelligent et mémorable basé sur {{projectName}}]\n  domain: [domaine exact de la liste ci-dessus]\n  scope: [landing|dashboard|full_app|platform]\n  platform: [web|mobile|desktop|pwa]\n  users: [description précise des utilisateurs]\n  problem_solved: [le problème résolu clairement]\n  value_proposition: [la promesse unique]\n  complexity: {{complexity}}\n  generated_at: {{isoTimestamp}}\n\npages_structure:\n  # SI scope = landing (5-8 pages marketing)\n  # SI scope = dashboard (10-15 pages app)\n  # SI scope = full_app (15-25 pages)\n  # SI scope = platform (25+ pages multi-acteurs)\n  \n  public:\n    - path: /\n      name: [Nom explicite]\n      purpose: [Objectif précis]\n      priority: high|medium|low\n    # Continue avec TOUTES les pages nécessaires\n\ninteractions:\n  # Interactions SPÉCIFIQUES au domaine\n  - type: [gamification|realtime|collaboration|automation]\n    elements: [liste précise des éléments]\n    wow_factor: [ce qui impressionnera]\n\ndata_schema:\n  # Entités RÉALISTES pour ce domaine\n  entities:\n    - name: [Entity]\n      fields: [champs pertinents]\n      sample_count: [nombre d'exemples à générer]\n  \n  sample_data:\n    # Données ULTRA-RÉALISTES du secteur\n    - entity: [Entity]\n      examples:\n        - [exemple 1 crédible et détaillé]\n        - [exemple 2 différent et réaliste]\n        - [exemple 3 varié]\n\ndesign_spec:\n  # Style adapté au domaine ET aux users\n  mood: [playful|professional|minimal|bold|elegant|technical|medical|luxurious]\n  primary: \"#[hex approprié au secteur]\"\n  secondary: \"#[hex complémentaire]\"\n  accent: \"#[hex pour CTAs]\"\n  \n  visual_style:\n    - animations: [subtle|moderate|rich|dramatic]\n    - spacing: [compact|comfortable|spacious]\n    - corners: [sharp|rounded|pill]\n    - shadows: [none|subtle|prominent|dramatic]\n    - gradients: [none|subtle|vibrant|animated]\n\n{{#if includePremiumFeatures}}\nspecial_features:\n  # 3-5 features \"WOW\" spécifiques au domaine\n  - name: [Feature innovante contextuelle]\n    description: [Comment ça marche]\n    impact: [Pourquoi c'est impressionnant]\n  - name: [Animation premium intégrée]\n    description: [Effet visuel avancé]\n    impact: [Expérience utilisateur exceptionnelle]\n  - name: [Intelligence contextuelle]\n    description: [IA/automation intégrée]\n    impact: [Gain de temps significatif]\n{{/if}}\n\ntechnical_requirements:\n  # Spécificités techniques si mentionnées\n  - responsive: [mobile_first|desktop_first|adaptive]\n  - theme: [light_only|dark_only|both|auto]\n  - accessibility: [basic|AA|AAA]\n  - seo: [basic|optimized|critical]\n  - performance: [standard|optimized|critical]\n  - tech_stack: [react_nextjs|vue_nuxt|angular|svelte]\n```\n\n## RÈGLES D'ANTICIPATION\n\n1. **Si \"landing\" dans le prompt** → scope: landing (5-8 pages max)\n2. **Si \"dashboard\" dans le prompt** → scope: dashboard (focus interface)\n3. **Si \"app\" ou \"plateforme\"** → scope: full_app ou platform\n4. **Si domaine ambigu** → utiliser detectDomain({{truncate userPrompt 200}})\n5. **Si features non mentionnées** → ajouter {{ifSet includePremiumFeatures \"3 wow_features du secteur\" \"features basiques\"}}\n6. **Si design non précisé** → déduire du domaine et des users\n7. **Si complexité {{complexity}}** → adapter le nombre de features et pages\n\n**INSTRUCTIONS SPÉCIALES :**\n- Pour {{detectDomain userPrompt}} → utiliser les données sectorielles appropriées\n- Scope détecté: {{detectScope userPrompt}}\n- NE GÉNÈRE QUE LE YAML. Sois EXHAUSTIF sur les pages et les features.\n- Assure-toi que chaque page a un PURPOSE clair et des données sample réalistes.\n- Les special_features doivent être INNOVANTES et spécifiques au {{detectDomain userPrompt}}.",
+  "metadata": {
+    "author": "App Generator System",
+    "created": "2025-01-09T00:00:00.000Z",
+    "updated": "2025-01-09T00:00:00.000Z",
+    "tags": ["architecture", "step1", "yaml", "analysis"]
+  }
+}

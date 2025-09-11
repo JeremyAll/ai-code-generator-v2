@@ -7,6 +7,11 @@
 api-keys.txt
 config/keys.js
 config/secrets.js
+**/ANTHROPIC_API_KEY*
+**/UNSPLASH_ACCESS_KEY*
+**/*key*
+**/*secret*
+**/*token*
 
 # Logs (peuvent contenir des clés)
 logs/
@@ -66,6 +71,13 @@ coverage/
 anthropic-cache/
 claude-cache/
 claude-sessions/
+sessions/
+cache/
+metrics/
+
+# Migration artifacts
+dist/
+build/
 
 # Backup files
 *.backup
