@@ -1,0 +1,14 @@
+{
+  "name": "@lovable/sandbox",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node src/test-webcontainer.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@webcontainer/api": "^1.6.1",
+    "fs-extra": "^11.0.0"
+  }
+}
