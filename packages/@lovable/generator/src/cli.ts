@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
-import { PureSonnetWorkflow } from './workflows/pure-sonnet.js';
+import { PureSonnetWorkflow } from './workflows/pure-sonnet.ts';
 import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
