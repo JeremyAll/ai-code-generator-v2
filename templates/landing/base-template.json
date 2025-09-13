@@ -1,0 +1,30 @@
+{
+  "name": "Landing Page Starter",
+  "description": "Modern landing page for startups and product launches",
+  "category": "landing",
+  "framework": "nextjs",
+  "features": [
+    "hero-section",
+    "features-showcase",
+    "testimonials",
+    "call-to-action",
+    "contact-form"
+  ],
+  "structure": {
+    "pages": [
+      "index",
+      "about",
+      "contact",
+      "privacy",
+      "terms"
+    ],
+    "components": [
+      "Hero",
+      "Features",
+      "Testimonials",
+      "CTA",
+      "ContactForm",
+      "Footer"
+    ]
+  }
+}

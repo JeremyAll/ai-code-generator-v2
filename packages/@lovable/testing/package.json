@@ -1,0 +1,111 @@
+{
+  "name": "@lovable/testing",
+  "version": "1.0.0",
+  "description": "Comprehensive testing and QA automation service for generated applications",
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node src/test.js",
+    "demo": "node src/demo.js",
+    "validate": "node -c src/index.ts",
+    "dev": "node --watch src/test.js",
+    "build": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.js",
+    "format": "prettier --write src/**/*.{ts,js}"
+  },
+  "keywords": [
+    "testing",
+    "qa",
+    "validation",
+    "accessibility",
+    "a11y",
+    "performance",
+    "security",
+    "seo",
+    "lighthouse",
+    "core-web-vitals",
+    "wcag",
+    "test-generation",
+    "unit-tests",
+    "integration-tests",
+    "e2e-tests",
+    "cypress",
+    "vitest",
+    "jest",
+    "quality-gate",
+    "automation",
+    "ci-cd"
+  ],
+  "author": "Lovable",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "peerDependencies": {
+    "vitest": "^1.0.0",
+    "jest": "^29.0.0",
+    "cypress": "^13.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "axe-core": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    },
+    "jest": {
+      "optional": true
+    },
+    "cypress": {
+      "optional": true
+    },
+    "@testing-library/react": {
+      "optional": true
+    },
+    "@testing-library/jest-dom": {
+      "optional": true
+    },
+    "axe-core": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lovable-dev/app-generator.git",
+    "directory": "packages/@lovable/testing"
+  },
+  "bugs": {
+    "url": "https://github.com/lovable-dev/app-generator/issues"
+  },
+  "homepage": "https://github.com/lovable-dev/app-generator/tree/main/packages/@lovable/testing#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/lovable-dev"
+  }
+}

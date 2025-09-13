@@ -1,0 +1,13 @@
+{
+  "name": "@lovable/templates",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node src/test-templates.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "fs-extra": "^11.0.0"
+  }
+}

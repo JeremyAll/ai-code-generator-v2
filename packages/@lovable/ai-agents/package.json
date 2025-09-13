@@ -1,0 +1,19 @@
+{
+  "name": "@lovable/ai-agents",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node src/test-simple.js",
+    "test:full": "node src/test-multi-agent.js",
+    "test:baml-v1": "node src/baml-system/test-baml-v1.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}

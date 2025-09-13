@@ -1,0 +1,30 @@
+{
+  "name": "SaaS Starter",
+  "description": "Complete SaaS application with auth, billing, dashboard",
+  "category": "saas",
+  "framework": "nextjs",
+  "features": [
+    "authentication",
+    "subscription-billing",
+    "user-dashboard",
+    "admin-panel",
+    "api-routes"
+  ],
+  "structure": {
+    "pages": [
+      "index",
+      "login",
+      "register",
+      "dashboard",
+      "pricing",
+      "settings"
+    ],
+    "components": [
+      "Navbar",
+      "Footer",
+      "PricingCard",
+      "DashboardChart",
+      "UserProfile"
+    ]
+  }
+}

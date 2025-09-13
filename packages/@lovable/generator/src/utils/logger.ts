@@ -3,12 +3,14 @@ import path from 'path';
 import chalk from 'chalk';
 import { TimestampManager, generateFullTimestamp, formatDuration } from './timestamp.js';
 
-export enum LogLevel {
-  ERROR = 0,
-  WARN = 1,
-  INFO = 2,
-  DEBUG = 3
-}
+export const LogLevel = {
+  ERROR: 0,
+  WARN: 1,
+  INFO: 2,
+  DEBUG: 3
+} as const;
+
+export type LogLevel = typeof LogLevel[keyof typeof LogLevel];
 
 export interface LogOptions {
   level: LogLevel;

@@ -1,0 +1,91 @@
+{
+  "name": "@lovable/design-system",
+  "version": "1.0.0",
+  "description": "Automatic design system generator for cohesive app styles",
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./presets": {
+      "import": "./dist/theme-presets.js",
+      "require": "./dist/theme-presets.cjs",
+      "types": "./dist/theme-presets.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "build:watch": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "pnpm build",
+    "demo": "node demo/generate-examples.js"
+  },
+  "keywords": [
+    "design-system",
+    "css",
+    "tailwind",
+    "colors",
+    "typography",
+    "theme",
+    "generator",
+    "automatic",
+    "ui",
+    "design"
+  ],
+  "author": "Lovable",
+  "license": "MIT",
+  "dependencies": {
+    "color": "^4.2.3"
+  },
+  "devDependencies": {
+    "@types/color": "^3.0.6",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lovable-dev/app-generator.git",
+    "directory": "packages/@lovable/design-system"
+  },
+  "bugs": {
+    "url": "https://github.com/lovable-dev/app-generator/issues"
+  },
+  "homepage": "https://github.com/lovable-dev/app-generator/tree/main/packages/@lovable/design-system#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

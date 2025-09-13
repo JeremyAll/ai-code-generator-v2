@@ -1,0 +1,92 @@
+{
+  "name": "@lovable/assets-service",
+  "version": "1.0.0",
+  "description": "Comprehensive assets service for generated applications with icons, illustrations, patterns, and emojis",
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node src/test.js",
+    "demo": "node src/demo.js",
+    "validate": "node -c src/index.ts",
+    "dev": "node --watch src/test.js",
+    "build": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.js",
+    "format": "prettier --write src/**/*.{ts,js}"
+  },
+  "keywords": [
+    "assets",
+    "icons",
+    "illustrations",
+    "patterns",
+    "emojis",
+    "svg",
+    "heroicons",
+    "feather",
+    "gradients",
+    "backgrounds",
+    "ui-components",
+    "generator",
+    "automation",
+    "domain-specific",
+    "framework-agnostic",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "author": "Lovable",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lovable-dev/app-generator.git",
+    "directory": "packages/@lovable/assets-service"
+  },
+  "bugs": {
+    "url": "https://github.com/lovable-dev/app-generator/issues"
+  },
+  "homepage": "https://github.com/lovable-dev/app-generator/tree/main/packages/@lovable/assets-service#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/lovable-dev"
+  }
+}

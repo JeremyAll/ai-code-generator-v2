@@ -1,84 +1,31 @@
-# SÉCURITÉ - Clés API et données sensibles
+# Dependencies
+node_modules/
+*.log
+
+# Environment files
 .env
 .env.local
-.env.production
-.env.staging
-*.env
-api-keys.txt
-config/keys.js
-config/secrets.js
-**/ANTHROPIC_API_KEY*
-**/UNSPLASH_ACCESS_KEY*
-**/*key*
-**/*secret*
-**/*token*
+.env.*.local
 
-# Logs (peuvent contenir des clés)
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Generated apps (trop volumineux + potentiellement sensibles)
-generated-apps/
-
-# Node.js
-node_modules/
-.npm
-.pnpm-debug.log*
-
-# Cache directories
-.cache/
-.tmp/
+# Next.js
 .next/
-.nuxt/
-.vuepress/
+out/
+
+# Build outputs
 dist/
+build/
+
+# Vercel
+.vercel
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
 
 # OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Temporary files
-*.tmp
-temp/
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# Anthropic/Claude specific
-anthropic-cache/
-claude-cache/
-claude-sessions/
-sessions/
-cache/
-metrics/
-
-# Migration artifacts
-dist/
-build/
-
-# Backup files
-*.backup
-*.bak
+# Cache
+.cache/
+*.tsbuildinfo

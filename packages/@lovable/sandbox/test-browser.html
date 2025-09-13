@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebContainer Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">🏖️ WebContainer Preview Test</h1>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Status</h2>
+            <div id="status" class="text-gray-600">Initializing...</div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Preview</h2>
+            <div id="preview-container" class="border border-gray-300 rounded h-96">
+                <div class="flex items-center justify-center h-full text-gray-500">
+                    Preview will appear here...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        async function testWebContainer() {
+            const statusEl = document.getElementById('status');
+            const previewEl = document.getElementById('preview-container');
+            
+            try {
+                statusEl.innerHTML = '🔄 Loading WebContainer API...';
+                
+                // Import WebContainer (CDN version)
+                const { WebContainer } = await import('https://unpkg.com/@webcontainer/api@1.6.1/dist/index.js');
+                
+                statusEl.innerHTML = '🚀 Booting WebContainer...';
+                
+                // Boot WebContainer
+                const webcontainer = await WebContainer.boot();
+                
+                statusEl.innerHTML = '📁 Setting up files...';
+                
+                // Simple React app files
+                const files = {
+                    'package.json': {
+                        file: {
+                            contents: JSON.stringify({
+                                name: 'preview-test',
+                                type: 'module',
+                                scripts: { dev: 'vite', build: 'vite build' },
+                                dependencies: {
+                                    'react': '^18.2.0',
+                                    'react-dom': '^18.2.0'
+                                },
+                                devDependencies: {
+                                    'vite': '^5.0.0',
+                                    '@vitejs/plugin-react': '^4.0.0'
+                                }
+                            }, null, 2)
+                        }
+                    },
+                    'index.html': {
+                        file: {
+                            contents: `<!DOCTYPE html>
+<html><head><title>Preview</title></head>
+<body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body>
+</html>`
+                        }
+                    },
+                    'vite.config.js': {
+                        file: {
+                            contents: `import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+export default defineConfig({ plugins: [react()] });`
+                        }
+                    },
+                    'src/main.jsx': {
+                        file: {
+                            contents: `import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);`
+                        }
+                    },
+                    'src/App.jsx': {
+                        file: {
+                            contents: `export default function App() {
+  return (
+    <div style={{padding: '20px', fontFamily: 'system-ui'}}>
+      <h1>🚀 WebContainer Works!</h1>
+      <p>This React app is running in a browser-based Node.js environment!</p>
+      <button onClick={() => alert('Hello from WebContainer!')}>
+        Click me!
+      </button>
+    </div>
+  );
+}`
+                        }
+                    }
+                };
+                
+                // Mount files
+                await webcontainer.mount(files);
+                
+                statusEl.innerHTML = '📦 Installing dependencies...';
+                
+                // Install dependencies
+                const installProcess = await webcontainer.spawn('npm', ['install']);
+                await installProcess.exit;
+                
+                statusEl.innerHTML = '⚡ Starting dev server...';
+                
+                // Start dev server
+                const devProcess = await webcontainer.spawn('npm', ['run', 'dev']);
+                
+                // Wait for server to be ready
+                webcontainer.on('server-ready', (port, url) => {
+                    statusEl.innerHTML = `✅ Preview ready at: <a href="${url}" target="_blank" class="text-blue-500 underline">${url}</a>`;
+                    
+                    // Show preview in iframe
+                    previewEl.innerHTML = `
+                        <iframe src="${url}" 
+                                class="w-full h-full border-0 rounded" 
+                                allow="cross-origin-isolated">
+                        </iframe>
+                    `;
+                });
+                
+            } catch (error) {
+                statusEl.innerHTML = `❌ Error: ${error.message}`;
+                console.error('WebContainer error:', error);
+            }
+        }
+        
+        // Auto-start
+        testWebContainer();
+    </script>
+</body>
+</html>

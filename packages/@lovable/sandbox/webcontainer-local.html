@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebContainer Test - Local</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4 text-gray-800">🏖️ WebContainer Preview Test</h1>
+            <p class="text-gray-600">Générateur d'apps avec preview instantanée comme Lovable/StackBlitz</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Status Panel -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2 animate-pulse"></span>
+                    Status WebContainer
+                </h2>
+                <div id="status" class="text-gray-600 space-y-2">
+                    <div class="text-center py-8">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                        <p>Initialisation...</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200 hidden" id="url-info">
+                    <h3 class="font-semibold text-blue-800 mb-2">🎯 URL de Preview Générée:</h3>
+                    <div id="preview-url" class="font-mono text-sm text-blue-600"></div>
+                </div>
+            </div>
+            
+            <!-- Preview Panel -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">📱 Preview Live</h2>
+                <div id="preview-container" class="border-2 border-gray-200 rounded-lg h-96 bg-gray-50">
+                    <div class="flex items-center justify-center h-full text-gray-500">
+                        <div class="text-center">
+                            <div class="mb-4">🚀</div>
+                            <p>La preview apparaîtra ici...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold mb-3">📊 Détails Techniques</h3>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="p-3 bg-green-50 rounded border border-green-200">
+                    <div class="font-semibold text-green-800">✅ WebContainer API</div>
+                    <div class="text-green-600">Node.js dans le navigateur</div>
+                </div>
+                <div class="p-3 bg-blue-50 rounded border border-blue-200">
+                    <div class="font-semibold text-blue-800">⚡ Vite + React</div>
+                    <div class="text-blue-600">Hot reload automatique</div>
+                </div>
+                <div class="p-3 bg-purple-50 rounded border border-purple-200">
+                    <div class="font-semibold text-purple-800">🎯 Preview Instantanée</div>
+                    <div class="text-purple-600">Comme Lovable/StackBlitz</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const statusEl = document.getElementById('status');
+        const previewEl = document.getElementById('preview-container');
+        const urlInfo = document.getElementById('url-info');
+        const previewUrl = document.getElementById('preview-url');
+        
+        function updateStatus(message, isError = false) {
+            statusEl.innerHTML = `
+                <div class="flex items-center ${isError ? 'text-red-600' : 'text-gray-700'}">
+                    <div class="w-2 h-2 ${isError ? 'bg-red-500' : 'bg-green-500'} rounded-full mr-3"></div>
+                    ${message}
+                </div>
+            `;
+        }
+        
+        async function testWebContainer() {
+            try {
+                updateStatus('🔄 Chargement de l\'API WebContainer...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Import WebContainer API
+                const { WebContainer } = await import('https://unpkg.com/@webcontainer/api@1.6.1/dist/index.js');
+                
+                updateStatus('🚀 Démarrage WebContainer...');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Boot WebContainer
+                const webcontainer = await WebContainer.boot();
+                
+                updateStatus('📁 Configuration des fichiers...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Files pour une app React simple
+                const files = {
+                    'package.json': {
+                        file: {
+                            contents: JSON.stringify({
+                                name: 'lovable-preview-test',
+                                type: 'module',
+                                scripts: { 
+                                    dev: 'vite --host', 
+                                    build: 'vite build' 
+                                },
+                                dependencies: {
+                                    'react': '^18.2.0',
+                                    'react-dom': '^18.2.0'
+                                },
+                                devDependencies: {
+                                    'vite': '^5.0.0',
+                                    '@vitejs/plugin-react': '^4.0.0'
+                                }
+                            }, null, 2)
+                        }
+                    },
+                    'index.html': {
+                        file: {
+                            contents: `<!DOCTYPE html>
+<html><head><title>Lovable Preview</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>`
+                        }
+                    },
+                    'vite.config.js': {
+                        file: {
+                            contents: `import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+export default defineConfig({ 
+    plugins: [react()],
+    server: { host: true, port: 3000 }
+});`
+                        }
+                    },
+                    'src/main.jsx': {
+                        file: {
+                            contents: `import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);`
+                        }
+                    },
+                    'src/App.jsx': {
+                        file: {
+                            contents: `export default function App() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-8">
+      <div className="max-w-4xl mx-auto">
+        <header className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-gray-800 mb-4">
+            🚀 WebContainer Fonctionne !
+          </h1>
+          <p className="text-xl text-gray-600">
+            Cette app React s'exécute dans un environnement Node.js dans le navigateur !
+          </p>
+        </header>
+        
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4 flex items-center">
+              🏖️ <span className="ml-2">WebContainer</span>
+            </h2>
+            <ul className="space-y-2 text-gray-700">
+              <li>✅ Node.js dans le navigateur</li>
+              <li>✅ Installation npm en temps réel</li>
+              <li>✅ Hot reload automatique</li>
+              <li>✅ Preview instantanée</li>
+            </ul>
+          </div>
+          
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4 flex items-center">
+              🎯 <span className="ml-2">Test Interactif</span>
+            </h2>
+            <button 
+              onClick={() => alert('Hello depuis WebContainer!')}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            >
+              Cliquez-moi !
+            </button>
+            <p className="text-sm text-gray-500 mt-2 text-center">
+              Preuve que JavaScript fonctionne
+            </p>
+          </div>
+        </div>
+        
+        <div className="mt-12 bg-green-50 border border-green-200 rounded-xl p-6">
+          <h3 className="text-xl font-semibold text-green-800 mb-2">
+            🎉 Succès ! Votre générateur AI a des previews instantanées
+          </h3>
+          <p className="text-green-700">
+            Cette technologie permet de générer des apps avec IA et les prévisualiser immédiatement, 
+            exactement comme Lovable et StackBlitz !
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}`
+                        }
+                    }
+                };
+                
+                // Mount files
+                await webcontainer.mount(files);
+                
+                updateStatus('📦 Installation des dépendances...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Install dependencies
+                const installProcess = await webcontainer.spawn('npm', ['install']);
+                await installProcess.exit;
+                
+                updateStatus('⚡ Démarrage du serveur de développement...');
+                
+                // Start dev server
+                const devProcess = await webcontainer.spawn('npm', ['run', 'dev']);
+                
+                // Wait for server ready
+                webcontainer.on('server-ready', (port, url) => {
+                    updateStatus(`✅ Preview prête ! Serveur actif sur le port ${port}`);
+                    
+                    // Show URL info
+                    urlInfo.classList.remove('hidden');
+                    previewUrl.innerHTML = `<a href="${url}" target="_blank" class="text-blue-600 hover:underline">${url}</a>`;
+                    
+                    // Show preview in iframe
+                    previewEl.innerHTML = `
+                        <iframe src="${url}" 
+                                class="w-full h-full border-0 rounded-lg bg-white" 
+                                allow="cross-origin-isolated"
+                                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals">
+                        </iframe>
+                        <div class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 text-xs rounded">
+                            ✅ LIVE
+                        </div>
+                    `;
+                    
+                    // Change status indicator
+                    const indicator = document.querySelector('.animate-pulse');
+                    if (indicator) {
+                        indicator.classList.remove('bg-yellow-500', 'animate-pulse');
+                        indicator.classList.add('bg-green-500');
+                    }
+                });
+                
+                // Handle errors from dev server
+                devProcess.output.pipeTo(new WritableStream({
+                    write(data) {
+                        console.log('Dev server:', data);
+                    }
+                }));
+                
+            } catch (error) {
+                updateStatus(`❌ Erreur: ${error.message}`, true);
+                console.error('WebContainer error:', error);
+                
+                // Show fallback message
+                previewEl.innerHTML = `
+                    <div class="flex items-center justify-center h-full text-center p-6">
+                        <div>
+                            <div class="text-6xl mb-4">⚠️</div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">WebContainer non disponible</h3>
+                            <p class="text-gray-600 text-sm mb-4">
+                                WebContainer nécessite un navigateur moderne avec support SharedArrayBuffer
+                            </p>
+                            <p class="text-gray-500 text-xs">
+                                Erreur: ${error.message}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Auto-start test
+        testWebContainer();
+    </script>
+</body>
+</html>

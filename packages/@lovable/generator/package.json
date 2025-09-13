@@ -1,15 +1,19 @@
 {
   "name": "@lovable/generator",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "generate": "node src/cli.js generate",
+    "test:integration": "node src/test-integration.js",
     "dev": "node src/workflows/pure-sonnet.js",
     "test:workflow": "node tests/test-workflow-critical.js",
     "clean": "node scripts/clean.js"
   },
   "dependencies": {
+    "@lovable/ai-agents": "workspace:*",
+    "@lovable/templates": "workspace:*",
+    "@lovable/sandbox": "workspace:*",
     "@anthropic-ai/sdk": "^0.61.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.0.0",

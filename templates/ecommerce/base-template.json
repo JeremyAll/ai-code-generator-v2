@@ -1,0 +1,30 @@
+{
+  "name": "E-commerce Starter",
+  "description": "Modern e-commerce with cart, checkout, product pages",
+  "category": "ecommerce",
+  "framework": "react",
+  "features": [
+    "product-catalog",
+    "shopping-cart",
+    "checkout-flow",
+    "payment-integration",
+    "order-tracking"
+  ],
+  "structure": {
+    "pages": [
+      "index",
+      "products",
+      "product-detail",
+      "cart",
+      "checkout",
+      "orders"
+    ],
+    "components": [
+      "ProductCard",
+      "CartItem",
+      "CheckoutForm",
+      "PaymentMethod",
+      "OrderSummary"
+    ]
+  }
+}

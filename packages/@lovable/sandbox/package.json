@@ -1,10 +1,9 @@
 {
   "name": "@lovable/sandbox",
   "version": "1.0.0",
-  "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "test": "node src/test-webcontainer.js",
+    "test": "node src/test-simple.js",
     "dev": "node src/index.js"
   },
   "dependencies": {
