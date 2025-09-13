@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>BAML Generator - Async Test</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .steps {
+            margin-top: 20px;
+        }
+
+        .step {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step.completed {
+            color: green;
+        }
+
+        .step.processing {
+            color: orange;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0fff4;
+            border: 2px solid #10b981;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .error {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #dc2626;
+        }
+
+        pre {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 BAML Generator - Mode Asynchrone</h1>
+
+        <div class="input-group">
+            <textarea
+                id="prompt"
+                placeholder="Décrivez votre application en détail...
+
+Exemple : Créez une marketplace de sneakers premium avec système de drops exclusifs, authentification, panier, wishlist, système de notation, chat en temps réel entre acheteurs et vendeurs, tableau de bord vendeur, analytics, etc."
+            ></textarea>
+        </div>
+
+        <button id="generateBtn" onclick="generate()">
+            Générer l'Application
+        </button>
+
+        <div id="status" class="status">
+            <h3>📊 Progression</h3>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 0%">
+                    0%
+                </div>
+            </div>
+
+            <div id="steps" class="steps">
+                <!-- Steps will be added here -->
+            </div>
+
+            <div id="timeElapsed" style="margin-top: 10px; color: #666;">
+                Temps écoulé : <span id="timer">0s</span>
+            </div>
+        </div>
+
+        <div id="result" class="result">
+            <h3>✅ Génération Complète !</h3>
+            <p>Votre application a été générée avec succès.</p>
+            <pre id="resultJson"></pre>
+        </div>
+
+        <div id="error" class="result error" style="display: none;">
+            <h3>❌ Erreur</h3>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3001';
+        let socket = null;
+        let currentJobId = null;
+        let startTime = null;
+        let timerInterval = null;
+
+        // Initialiser Socket.IO
+        function initSocket() {
+            socket = io(API_URL);
+
+            socket.on('connect', () => {
+                console.log('✅ WebSocket connected');
+            });
+
+            socket.on('job:progress', (data) => {
+                if (data.id === currentJobId) {
+                    updateProgress(data);
+                }
+            });
+
+            socket.on('job:completed', async (job) => {
+                if (job.id === currentJobId) {
+                    await showResult(job);
+                }
+            });
+        }
+
+        // Générer
+        async function generate() {
+            const prompt = document.getElementById('prompt').value.trim();
+
+            if (!prompt) {
+                alert('Veuillez entrer une description');
+                return;
+            }
+
+            // Reset UI
+            document.getElementById('status').classList.add('active');
+            document.getElementById('result').classList.remove('active');
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('steps').innerHTML = '';
+
+            // Start timer
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+
+            try {
+                // Envoyer la requête
+                const response = await fetch(`${API_URL}/api/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt,
+                        metadata: {
+                            source: 'web',
+                            timestamp: Date.now()
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentJobId = data.jobId;
+                    console.log('Job created:', currentJobId);
+
+                    // Commencer le polling
+                    pollStatus();
+                } else {
+                    throw new Error(data.error);
+                }
+
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        // Polling du statut
+        async function pollStatus() {
+            if (!currentJobId) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/status/${currentJobId}`);
+                const job = await response.json();
+
+                updateProgress({
+                    progress: job.progress,
+                    status: job.status,
+                    steps: job.steps
+                });
+
+                if (job.status === 'completed') {
+                    await showResult(job);
+                } else if (job.status === 'failed') {
+                    showError(job.error);
+                } else {
+                    // Continuer le polling
+                    setTimeout(pollStatus, 1000);
+                }
+
+            } catch (error) {
+                console.error('Polling error:', error);
+                setTimeout(pollStatus, 2000);
+            }
+        }
+
+        // Mettre à jour la progression
+        function updateProgress(data) {
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = data.progress + '%';
+            progressFill.textContent = data.progress + '%';
+
+            // Mettre à jour les étapes
+            if (data.steps && data.steps.length > 0) {
+                const stepsDiv = document.getElementById('steps');
+                stepsDiv.innerHTML = '';
+
+                const uniqueSteps = [...new Set(data.steps)];
+                uniqueSteps.forEach((step, index) => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'step completed';
+                    stepDiv.innerHTML = `
+                        <span>✅</span>
+                        <span>${step}</span>
+                    `;
+                    stepsDiv.appendChild(stepDiv);
+                });
+
+                // Ajouter l'étape en cours si pas à 100%
+                if (data.progress < 100 && data.status === 'processing') {
+                    const currentStep = document.createElement('div');
+                    currentStep.className = 'step processing';
+                    currentStep.innerHTML = `
+                        <span>⏳</span>
+                        <span>Processing...</span>
+                    `;
+                    stepsDiv.appendChild(currentStep);
+                }
+            }
+        }
+
+        // Afficher le résultat
+        async function showResult(job) {
+            clearInterval(timerInterval);
+
+            document.getElementById('result').classList.add('active');
+            document.getElementById('generateBtn').disabled = false;
+
+            // Récupérer le résultat complet
+            const response = await fetch(`${API_URL}/api/result/${currentJobId}`);
+            const data = await response.json();
+
+            if (data.success) {
+                const summary = {
+                    name: data.result.name,
+                    type: data.result.projectType,
+                    pages: data.result.pages?.length || 0,
+                    components: data.result.components?.length || 0,
+                    contexts: data.result.contexts?.length || 0,
+                    api_routes: data.result.apiRoutes?.length || 0,
+                    images: Object.keys(data.result.images || {}).length,
+                    duration: data.duration + 's'
+                };
+
+                document.getElementById('resultJson').textContent =
+                    JSON.stringify(summary, null, 2);
+
+                console.log('Full result:', data.result);
+            }
+        }
+
+        // Afficher une erreur
+        function showError(message) {
+            clearInterval(timerInterval);
+
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('generateBtn').disabled = false;
+        }
+
+        // Timer
+        function updateTimer() {
+            if (!startTime) return;
+
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('timer').textContent = elapsed + 's';
+        }
+
+        // Initialiser
+        initSocket();
+    </script>
+</body>
+</html>
