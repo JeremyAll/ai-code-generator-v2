@@ -1,363 +1,319 @@
 import { EventEmitter } from 'events';
-import Anthropic from '@anthropic-ai/sdk';
+import { StreamingHandler } from './streaming-handler.js';
+import { SCoTEnhancer } from './intelligence/scot-enhancer.js';
+import { SemanticCache } from './cache/semantic-cache.js';
+import { QualityEnhancer } from './quality/enhancer.js';
 import { UnsplashService } from './unsplash-service.js';
 
 export class StreamingGenerator extends EventEmitter {
   constructor(apiKey) {
     super();
-    this.client = new Anthropic({
-      apiKey: apiKey || process.env.ANTHROPIC_API_KEY,
-      maxRetries: 3,
-      timeout: 30000  // 30s par ÉTAPE, pas pour tout
-    });
+
+    // Services intégrés
+    this.streamingHandler = new StreamingHandler();
+    this.scotEnhancer = new SCoTEnhancer();
+    this.semanticCache = new SemanticCache();
+    this.qualityEnhancer = new QualityEnhancer();
     this.unsplash = new UnsplashService();
+
+    // Configuration
+    this.useCache = true;
+    this.enhancePrompts = true;
+    this.qualityCheck = true;
+  }
+
+  async init() {
+    // Initialiser le cache sémantique
+    await this.semanticCache.init();
+    await this.semanticCache.preloadCommonPatterns();
   }
 
   async generate(userPrompt, metadata = {}) {
-    const steps = [
-      { name: 'analyze', weight: 10 },
-      { name: 'architecture', weight: 20 },
-      { name: 'pages', weight: 20 },
-      { name: 'components', weight: 20 },
-      { name: 'state', weight: 15 },
-      { name: 'api', weight: 10 },
-      { name: 'images', weight: 5 }
-    ];
+    const startTime = Date.now();
+    console.log('🚀 Génération avancée démarrée');
 
-    let result = {
-      prompt: userPrompt,
-      metadata,
-      timestamp: Date.now()
-    };
-
-    let totalProgress = 0;
-
-    // ÉTAPE PAR ÉTAPE - Chaque étape est indépendante
-    for (const step of steps) {
-      try {
+    try {
+      // Étape 0: Vérifier le cache sémantique
+      if (this.useCache) {
         this.emit('progress', {
-          step: step.name,
-          progress: totalProgress,
-          message: `Processing ${step.name}...`
+          step: 'cache_check',
+          progress: 5,
+          message: 'Vérification du cache sémantique...'
         });
 
-        switch (step.name) {
-          case 'analyze':
-            result.analysis = await this.analyzePrompt(userPrompt);
-            break;
+        const cached = await this.semanticCache.getCached(userPrompt);
+        if (cached) {
+          console.log('🎯 Cache hit - génération instantanée');
+          this.emit('progress', {
+            step: 'cache_hit',
+            progress: 100,
+            message: 'Résultat trouvé en cache'
+          });
 
-          case 'architecture':
-            result.architecture = await this.generateArchitecture(
-              userPrompt,
-              result.analysis
-            );
-            break;
+          return {
+            ...cached,
+            cached: true,
+            processingTime: Date.now() - startTime
+          };
+        }
+      }
 
-          case 'pages':
-            result.pages = await this.generatePages(
-              result.architecture
-            );
-            break;
+      // Étape 1: Amélioration du prompt avec SCoT
+      this.emit('progress', {
+        step: 'prompt_enhancement',
+        progress: 10,
+        message: 'Amélioration du prompt avec Chain-of-Thought...'
+      });
 
-          case 'components':
-            result.components = await this.generateComponents(
-              result.architecture,
-              result.pages
-            );
-            break;
+      let enhancedPrompt = userPrompt;
+      if (this.enhancePrompts) {
+        enhancedPrompt = this.scotEnhancer.enhancePrompt(userPrompt);
+        console.log('✨ Prompt amélioré avec SCoT');
+      }
 
-          case 'state':
-            result.state = await this.generateStateManagement(
-              result.architecture
-            );
-            break;
+      // Étape 2: Génération streaming principale
+      this.emit('progress', {
+        step: 'main_generation',
+        progress: 20,
+        message: 'Génération streaming en cours...'
+      });
 
-          case 'api':
-            result.api = await this.generateAPI(
-              result.architecture
-            );
-            break;
+      const rawResult = await this.streamingHandler.generateWithStream(
+        enhancedPrompt,
+        (progressData) => {
+          // Propager les événements de streaming
+          this.emit('progress', {
+            step: 'streaming',
+            progress: 20 + (progressData.processed || 0) / 10,
+            message: progressData.preview ? `Génération: ...${progressData.preview}` : 'Streaming...'
+          });
+        }
+      );
 
-          case 'images':
-            result.images = await this.fetchImages(
-              result.analysis
-            );
-            break;
+      // Étape 3: Amélioration qualité
+      this.emit('progress', {
+        step: 'quality_enhancement',
+        progress: 80,
+        message: 'Amélioration de la qualité...'
+      });
+
+      let finalResult = rawResult;
+      let qualityReport = { score: 10, improvements: [] };
+
+      if (this.qualityCheck) {
+        const qualityResult = await this.qualityEnhancer.enhance(rawResult, userPrompt);
+        finalResult = qualityResult.enhanced;
+        qualityReport = {
+          score: qualityResult.score,
+          improvements: qualityResult.improvements
+        };
+        console.log(`🔧 Qualité améliorée - Score: ${qualityResult.score}/10`);
+      }
+
+      // Étape 4: Enrichissement avec images
+      this.emit('progress', {
+        step: 'image_fetching',
+        progress: 90,
+        message: 'Ajout des images...'
+      });
+
+      const enrichedResult = await this.enrichWithImages(finalResult, userPrompt);
+
+      // Étape 5: Mise en cache
+      this.emit('progress', {
+        step: 'caching',
+        progress: 95,
+        message: 'Mise en cache...'
+      });
+
+      if (this.useCache && qualityReport.score >= 8) {
+        await this.semanticCache.setCached(userPrompt, enrichedResult, {
+          qualityScore: qualityReport.score,
+          generatedAt: Date.now(),
+          processingTime: Date.now() - startTime,
+          ...metadata
+        });
+        console.log('💾 Résultat mis en cache');
+      }
+
+      // Résultat final
+      this.emit('progress', {
+        step: 'complete',
+        progress: 100,
+        message: 'Génération terminée avec succès'
+      });
+
+      const finalOutput = {
+        ...enrichedResult,
+        metadata: {
+          ...metadata,
+          processingTime: Date.now() - startTime,
+          qualityScore: qualityReport.score,
+          improvements: qualityReport.improvements,
+          cached: false,
+          generatedAt: Date.now()
+        }
+      };
+
+      console.log(`✅ Génération complète en ${Date.now() - startTime}ms`);
+      return finalOutput;
+
+    } catch (error) {
+      console.error('❌ Erreur génération:', error);
+
+      this.emit('progress', {
+        step: 'error',
+        progress: 0,
+        message: `Erreur: ${error.message}`
+      });
+
+      // Fallback: retourner structure basique
+      return this.createFallbackResult(userPrompt, error);
+    }
+  }
+
+  async enrichWithImages(result, originalPrompt) {
+    try {
+      // Tenter de parser le résultat
+      let parsed;
+      if (typeof result === 'string') {
+        parsed = JSON.parse(result);
+      } else {
+        parsed = result;
+      }
+
+      // Déterminer les mots-clés pour images
+      const imageKeywords = this.extractImageKeywords(originalPrompt, parsed);
+
+      if (imageKeywords.length > 0) {
+        const images = {};
+
+        for (const keyword of imageKeywords.slice(0, 3)) { // Max 3 catégories
+          try {
+            const unsplashImages = await this.unsplash.searchImages(keyword, 2);
+            images[keyword] = unsplashImages;
+          } catch (error) {
+            console.warn(`Images pour "${keyword}" non disponibles:`, error.message);
+            images[keyword] = [];
+          }
         }
 
-        totalProgress += step.weight;
-
-        this.emit('progress', {
-          step: step.name,
-          progress: totalProgress,
-          message: `Completed ${step.name}`
-        });
-
-        // Petit délai pour éviter rate limiting
-        await this.sleep(500);
-
-      } catch (error) {
-        console.error(`Step ${step.name} failed:`, error);
-
-        // On continue même si une étape échoue
-        result[step.name] = {
-          error: error.message,
-          fallback: this.getFallback(step.name)
-        };
-      }
-    }
-
-    // Assembler le résultat final
-    return this.assembleResult(result);
-  }
-
-  async analyzePrompt(prompt) {
-    // Prompt COURT et FOCALISÉ pour analyse
-    const response = await this.client.messages.create({
-      model: 'claude-3-haiku-20240307',  // Modèle RAPIDE pour analyse
-      max_tokens: 500,
-      temperature: 0.3,
-      system: 'Analyze the user request. Output JSON only.',
-      messages: [{
-        role: 'user',
-        content: `Analyze this app request:
-"${prompt}"
-
-Return JSON:
-{
-  "type": "ecommerce|saas|landing|dashboard",
-  "product": "what is being sold/offered",
-  "audience": "target users",
-  "features": ["key features needed"],
-  "complexity": "simple|medium|complex"
-}`
-      }]
-    });
-
-    return JSON.parse(response.content[0].text);
-  }
-
-  async generateArchitecture(prompt, analysis) {
-    // Architecture génération - 2000 tokens max
-    const response = await this.client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 2000,  // PETIT chunk
-      temperature: 0.7,
-      system: 'Generate app architecture. JSON only.',
-      messages: [{
-        role: 'user',
-        content: `Create architecture for: ${analysis.type} - ${analysis.product}
-Features: ${analysis.features.join(', ')}
-
-Return JSON:
-{
-  "name": "app name",
-  "structure": {
-    "pages": ["list of pages needed"],
-    "components": ["list of components"],
-    "contexts": ["state contexts needed"],
-    "apis": ["api endpoints needed"]
-  },
-  "tech": {
-    "framework": "Next.js",
-    "styling": "Tailwind",
-    "state": "Context API"
-  }
-}`
-      }]
-    });
-
-    return JSON.parse(response.content[0].text);
-  }
-
-  async generatePages(architecture) {
-    const pages = [];
-
-    // Générer 3-4 pages à la fois pour éviter timeout
-    const pageGroups = this.chunkArray(architecture.structure.pages, 3);
-
-    for (const group of pageGroups) {
-      const response = await this.client.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 3000,
-        temperature: 0.7,
-        system: 'Generate page implementations. JSON only.',
-        messages: [{
-          role: 'user',
-          content: `Generate these pages: ${group.join(', ')}
-App: ${architecture.name}
-
-For each page return:
-{
-  "name": "page name",
-  "path": "/path",
-  "components": ["components used"],
-  "layout": "layout HTML structure",
-  "seo": { "title": "", "description": "" }
-}`
-        }]
-      });
-
-      const generated = JSON.parse(response.content[0].text);
-      pages.push(...(Array.isArray(generated) ? generated : [generated]));
-
-      await this.sleep(1000); // Éviter rate limit
-    }
-
-    return pages;
-  }
-
-  async generateComponents(architecture, pages) {
-    // Similaire aux pages, par chunks
-    const allComponents = [...new Set(
-      pages.flatMap(p => p.components)
-    )];
-
-    const componentGroups = this.chunkArray(allComponents, 5);
-    const components = [];
-
-    for (const group of componentGroups) {
-      const response = await this.client.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        temperature: 0.7,
-        system: 'Generate React components. JSON only.',
-        messages: [{
-          role: 'user',
-          content: `Generate components: ${group.join(', ')}
-
-Return array of:
-{
-  "name": "ComponentName",
-  "props": ["prop1", "prop2"],
-  "hooks": ["useState", "useEffect"],
-  "dependencies": ["other components"]
-}`
-        }]
-      });
-
-      const generated = JSON.parse(response.content[0].text);
-      components.push(...(Array.isArray(generated) ? generated : [generated]));
-    }
-
-    return components;
-  }
-
-  async generateStateManagement(architecture) {
-    // State management en une seule requête courte
-    const response = await this.client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1500,
-      temperature: 0.7,
-      system: 'Generate state management. JSON only.',
-      messages: [{
-        role: 'user',
-        content: `Create contexts for: ${architecture.name}
-Needed: ${architecture.structure.contexts.join(', ')}
-
-Return array of contexts with structure.`
-      }]
-    });
-
-    return JSON.parse(response.content[0].text);
-  }
-
-  async generateAPI(architecture) {
-    // API routes - requête simple
-    const response = await this.client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      temperature: 0.7,
-      system: 'Generate API routes. JSON only.',
-      messages: [{
-        role: 'user',
-        content: `Create API for: ${architecture.name}
-Endpoints: ${architecture.structure.apis.join(', ')}`
-      }]
-    });
-
-    return JSON.parse(response.content[0].text);
-  }
-
-  async fetchImages(analysis) {
-    try {
-      const keywords = this.getImageKeywords(analysis);
-      const images = {};
-
-      for (const [category, keyword] of Object.entries(keywords)) {
-        images[category] = await this.unsplash.searchImages(keyword, 3);
+        parsed.images = images;
       }
 
-      return images;
+      return parsed;
     } catch (error) {
-      console.warn('Images fetch failed:', error);
-      return {};
+      console.warn('Enrichissement images échoué:', error.message);
+      return result; // Retourner résultat sans images
     }
   }
 
-  getImageKeywords(analysis) {
-    const base = {
-      hero: `${analysis.product} hero banner`,
-      products: `${analysis.product} collection`,
-      about: `${analysis.type} business`
-    };
+  extractImageKeywords(prompt, parsedResult) {
+    const keywords = [];
+    const lowerPrompt = prompt.toLowerCase();
 
-    return base;
-  }
-
-  chunkArray(array, size) {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
+    // Mots-clés basés sur le type d'app
+    if (lowerPrompt.includes('ecommerce') || lowerPrompt.includes('shop')) {
+      keywords.push('products', 'shopping', 'business');
+    } else if (lowerPrompt.includes('food') || lowerPrompt.includes('restaurant')) {
+      keywords.push('food', 'restaurant', 'cooking');
+    } else if (lowerPrompt.includes('travel') || lowerPrompt.includes('vacation')) {
+      keywords.push('travel', 'vacation', 'landscape');
+    } else if (lowerPrompt.includes('tech') || lowerPrompt.includes('software')) {
+      keywords.push('technology', 'software', 'computer');
+    } else {
+      // Mots-clés génériques
+      keywords.push('business', 'office', 'modern');
     }
-    return chunks;
+
+    // Ajouter mots-clés du nom de l'app si disponible
+    if (parsedResult && parsedResult.name) {
+      const appName = parsedResult.name.toLowerCase();
+      if (appName.includes('music')) keywords.push('music');
+      if (appName.includes('fitness')) keywords.push('fitness');
+      if (appName.includes('education')) keywords.push('education');
+    }
+
+    return [...new Set(keywords)]; // Supprimer doublons
   }
 
-  getFallback(stepName) {
-    const fallbacks = {
-      pages: [{ name: 'Home', path: '/' }],
-      components: [{ name: 'Header' }, { name: 'Footer' }],
-      state: [{ name: 'AppContext' }],
-      api: [{ path: '/api/health', method: 'GET' }],
-      images: {}
-    };
+  createFallbackResult(prompt, error) {
+    const appName = this.extractAppName(prompt) || 'GeneratedApp';
 
-    return fallbacks[stepName] || null;
-  }
-
-  assembleResult(result) {
-    // Assembler tous les morceaux en structure finale
     return {
-      projectType: result.analysis?.type || 'ecommerce',
-      name: result.architecture?.name || 'MyApp',
-      pages: result.pages || [],
-      components: result.components || [],
-      contexts: result.state || [],
-      apiRoutes: result.api || [],
-      images: result.images || {},
-      designSystem: this.generateDesignSystem(result.analysis),
+      projectType: 'fallback',
+      name: appName,
+      description: `Application générée à partir de: "${prompt}"`,
+      error: error.message,
+      pages: [{
+        name: 'Home',
+        path: '/',
+        components: ['Header', 'Footer'],
+        layout: 'Basic homepage layout',
+        seo: { title: appName, description: 'Generated application' }
+      }],
+      components: [
+        { name: 'Header', props: [], hooks: [], dependencies: [] },
+        { name: 'Footer', props: [], hooks: [], dependencies: [] }
+      ],
+      contexts: [
+        { name: 'AppContext', state: ['loading', 'user'], actions: ['setLoading'] }
+      ],
+      apiRoutes: [
+        { path: '/api/health', method: 'GET', description: 'Health check' }
+      ],
+      images: {},
+      designSystem: {
+        colors: { primary: '#3B82F6', secondary: '#64748B' },
+        typography: { fontFamily: 'Inter, sans-serif' }
+      },
       metadata: {
         generatedAt: Date.now(),
-        prompt: result.prompt,
-        analysis: result.analysis
+        prompt,
+        fallback: true,
+        error: error.message
       }
     };
   }
 
-  generateDesignSystem(analysis) {
-    // Design system basé sur l'analyse
-    const themes = {
-      ecommerce: {
-        colors: { primary: '#000000', secondary: '#ffffff' },
-        typography: { fontFamily: 'Inter' }
-      },
-      saas: {
-        colors: { primary: '#4F46E5', secondary: '#10B981' },
-        typography: { fontFamily: 'Inter' }
-      }
-    };
+  extractAppName(prompt) {
+    // Simple extraction du nom depuis le prompt
+    const words = prompt.split(' ');
+    const meaningfulWords = words.filter(w =>
+      w.length > 3 &&
+      !['create', 'build', 'make', 'develop', 'application', 'app', 'website'].includes(w.toLowerCase())
+    );
 
-    return themes[analysis?.type] || themes.ecommerce;
+    if (meaningfulWords.length > 0) {
+      return meaningfulWords[0].charAt(0).toUpperCase() + meaningfulWords[0].slice(1) + 'App';
+    }
+
+    return 'MyApp';
+  }
+
+  // Méthodes de configuration
+  setCacheEnabled(enabled) {
+    this.useCache = enabled;
+    console.log(`Cache ${enabled ? 'activé' : 'désactivé'}`);
+  }
+
+  setPromptEnhancement(enabled) {
+    this.enhancePrompts = enabled;
+    console.log(`Amélioration prompts ${enabled ? 'activée' : 'désactivée'}`);
+  }
+
+  setQualityCheck(enabled) {
+    this.qualityCheck = enabled;
+    console.log(`Vérification qualité ${enabled ? 'activée' : 'désactivée'}`);
+  }
+
+  // Méthodes utilitaires
+  async getCacheStats() {
+    return this.semanticCache.getStats();
+  }
+
+  async clearCache() {
+    return this.semanticCache.clearCache();
   }
 
   sleep(ms) {
