@@ -5,6 +5,7 @@ node_modules/
 data/jobs/*.json
 .claude/
 baml-test/
+app-generator/
 
 # Next.js build output
 .next/
