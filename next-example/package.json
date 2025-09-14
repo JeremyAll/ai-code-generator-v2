@@ -1,0 +1,32 @@
+{
+  "name": "baml-nextjs-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test:stream": "node src/test/test-api-simple.js",
+    "test:api": "node src/test/test-connection.js",
+    "test:scot": "node src/test/test-scot-demo.js",
+    "test:cache": "node src/test/test-cache.js",
+    "test:baml": "node src/test/test-baml-pragmatic.js",
+    "test:all": "node src/test/monitor.js",
+    "test:monitor": "node src/test/monitor.js | tee test-report.txt"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.3",
+    "@tailwindcss/postcss": "^4.1.13",
+    "autoprefixer": "^10.4.21",
+    "next": "14.0.0",
+    "postcss": "^8.5.6",
+    "react": "^18",
+    "react-dom": "^18",
+    "tailwindcss": "^4.1.13"
+  },
+  "devDependencies": {
+    "eslint": "^8",
+    "eslint-config-next": "14.0.0"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@lovable/editor",
+  "version": "1.0.0",
+  "description": "Visual and code editors for Lovable",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@lovable/ui": "workspace:*",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@lovable/tsconfig": "workspace:*",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -1,0 +1,17 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "packages/@lovable/*"
+  - "templates/*"
+
+# Enable shared node_modules (hoisting)
+shared-workspace-lockfile: true
+
+# Configure automatic dependency installation
+auto-install-peers: true
+
+# Optimize for monorepo
+link-workspace-packages: true
+
+# Save exact versions in lockfile
+save-exact: true

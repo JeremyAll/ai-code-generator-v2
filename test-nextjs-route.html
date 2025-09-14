@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Next.js API Route Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .streaming-text {
+            animation: typewriter 0.1s steps(1, end);
+        }
+
+        @keyframes typewriter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">
+                🚀 Next.js API Route Tester
+            </h1>
+            <p class="text-gray-600 mb-6">
+                Test the streaming API route with fast/production mode selection
+            </p>
+
+            <!-- Controls -->
+            <div class="mb-6">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Prompt
+                    </label>
+                    <textarea
+                        id="prompt"
+                        rows="4"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Create a simple React component..."
+                    >Create a simple React todo app with add, delete, and toggle functionality</textarea>
+                </div>
+
+                <div class="flex items-center space-x-4 mb-4">
+                    <label class="flex items-center">
+                        <input type="radio" name="mode" value="fast" checked class="mr-2">
+                        <span class="text-sm font-medium">Fast Mode (Haiku)</span>
+                        <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded">~5s</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="mode" value="production" class="mr-2">
+                        <span class="text-sm font-medium">Production Mode (Sonnet)</span>
+                        <span class="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">~30s</span>
+                    </label>
+                </div>
+
+                <button
+                    id="generateBtn"
+                    onclick="testStreaming()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                    Test Streaming
+                </button>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div id="status" class="bg-white rounded-lg shadow-lg p-6 mb-6 hidden">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">📡 Streaming Status</h2>
+
+            <div class="mb-4">
+                <div class="flex justify-between text-sm text-gray-600 mb-1">
+                    <span>Progress</span>
+                    <span id="statusText">Connecting...</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="flex justify-between text-sm text-gray-600">
+                <span>Time: <span id="timer">0s</span></span>
+                <span>Chunks: <span id="chunkCount">0</span></span>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="bg-white rounded-lg shadow-lg p-6 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">✨ Results</h2>
+                <div id="resultStats" class="text-sm text-gray-600">
+                    <!-- Stats will be populated -->
+                </div>
+            </div>
+
+            <!-- Streaming Output -->
+            <div class="mb-4">
+                <h3 class="text-lg font-medium text-gray-800 mb-2">Real-time Output:</h3>
+                <div id="streamingOutput" class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm h-64 overflow-y-auto">
+                    <!-- Streaming content will appear here -->
+                </div>
+            </div>
+
+            <!-- Final JSON -->
+            <details class="mt-4">
+                <summary class="cursor-pointer text-lg font-medium text-gray-800 hover:text-blue-600">
+                    📄 Complete JSON Output
+                </summary>
+                <pre id="finalJson" class="bg-gray-100 p-4 rounded-lg mt-2 overflow-auto max-h-96 text-xs">
+                    <!-- Final JSON will be displayed here -->
+                </pre>
+            </details>
+        </div>
+
+        <!-- Error Display -->
+        <div id="error" class="bg-red-50 border border-red-200 rounded-lg p-6 hidden">
+            <h2 class="text-xl font-semibold text-red-800 mb-2">❌ Error</h2>
+            <div id="errorMessage" class="text-red-700">
+                <!-- Error message will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let startTime;
+        let timerInterval;
+        let chunkCounter = 0;
+
+        async function testStreaming() {
+            const prompt = document.getElementById('prompt').value.trim();
+            const mode = document.querySelector('input[name="mode"]:checked').value;
+
+            if (!prompt) {
+                alert('Please enter a prompt');
+                return;
+            }
+
+            // Reset UI
+            document.getElementById('status').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('error').classList.add('hidden');
+            document.getElementById('generateBtn').disabled = true;
+
+            // Reset counters
+            chunkCounter = 0;
+            document.getElementById('chunkCount').textContent = '0';
+            document.getElementById('streamingOutput').innerHTML = '';
+            document.getElementById('progressBar').style.width = '0%';
+
+            // Start timer
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 100);
+
+            try {
+                // Prepare headers
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                // Add fast mode header if selected
+                if (mode === 'fast') {
+                    headers['x-fast-mode'] = 'true';
+                }
+
+                document.getElementById('statusText').textContent = `Connecting (${mode} mode)...`;
+
+                // Make streaming request
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ prompt })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                document.getElementById('statusText').textContent = 'Streaming...';
+
+                // Read the streaming response
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullContent = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+
+                    if (done) {
+                        document.getElementById('statusText').textContent = 'Complete!';
+                        document.getElementById('progressBar').style.width = '100%';
+                        break;
+                    }
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6).trim();
+
+                            if (data === '[DONE]') {
+                                showResults(fullContent);
+                                return;
+                            }
+
+                            try {
+                                const parsed = JSON.parse(data);
+                                if (parsed.chunk) {
+                                    fullContent += parsed.chunk;
+                                    chunkCounter++;
+
+                                    // Update UI
+                                    document.getElementById('chunkCount').textContent = chunkCounter;
+                                    appendToStream(parsed.chunk);
+
+                                    // Rough progress estimation
+                                    const progress = Math.min(95, (chunkCounter / 100) * 100);
+                                    document.getElementById('progressBar').style.width = progress + '%';
+                                }
+                            } catch (e) {
+                                // Ignore parse errors for non-JSON data
+                            }
+                        }
+                    }
+                }
+
+                showResults(fullContent);
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                clearInterval(timerInterval);
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+
+        function appendToStream(chunk) {
+            const output = document.getElementById('streamingOutput');
+            const span = document.createElement('span');
+            span.textContent = chunk;
+            span.className = 'streaming-text';
+            output.appendChild(span);
+
+            // Auto-scroll to bottom
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function showResults(content) {
+            document.getElementById('status').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+
+            const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+            const wordsPerSecond = (content.split(/\s+/).length / duration).toFixed(1);
+
+            document.getElementById('resultStats').innerHTML = `
+                Duration: ${duration}s |
+                Chunks: ${chunkCounter} |
+                Length: ${content.length} chars |
+                Speed: ${wordsPerSecond} words/s
+            `;
+
+            // Try to parse as JSON for better display
+            try {
+                const parsed = JSON.parse(content);
+                document.getElementById('finalJson').textContent = JSON.stringify(parsed, null, 2);
+            } catch (e) {
+                document.getElementById('finalJson').textContent = content;
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('status').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        function updateTimer() {
+            if (startTime) {
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                document.getElementById('timer').textContent = elapsed + 's';
+            }
+        }
+
+        // Set default prompt
+        document.addEventListener('DOMContentLoaded', function() {
+            const defaultPrompts = [
+                'Create a simple React todo app with add, delete, and toggle functionality',
+                'Build a responsive landing page for a coffee shop',
+                'Create a React component for a user profile card',
+                'Build a simple calculator app with React hooks'
+            ];
+
+            const randomPrompt = defaultPrompts[Math.floor(Math.random() * defaultPrompts.length)];
+            document.getElementById('prompt').value = randomPrompt;
+        });
+    </script>
+</body>
+</html>

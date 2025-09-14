@@ -1,0 +1,38 @@
+{
+  "name": "@lovable/realtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Real-time WebSocket service with Socket.io",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "tsx src/main.ts",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@lovable/database": "workspace:*",
+    "socket.io": "^4.7.5",
+    "express": "^4.19.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "redis": "^4.6.13",
+    "@socket.io/redis-adapter": "^8.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@lovable/tsconfig": "workspace:*",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.8",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@lovable/template-saas",
+  "version": "1.0.0",
+  "description": "SaaS application template with dashboard, billing, and user management",
+  "main": "index.js",
+  "files": [
+    "components/**/*",
+    "pages/**/*",
+    "lib/**/*",
+    "styles/**/*",
+    "public/**/*",
+    "next.config.js",
+    "tailwind.config.js",
+    "README.md"
+  ],
+  "keywords": [
+    "saas",
+    "dashboard",
+    "billing",
+    "nextjs",
+    "template"
+  ]
+}

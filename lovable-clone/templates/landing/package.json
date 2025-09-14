@@ -1,0 +1,23 @@
+{
+  "name": "@lovable/template-landing",
+  "version": "1.0.0",
+  "description": "Modern landing page template with animations and conversion optimization",
+  "main": "index.js",
+  "files": [
+    "components/**/*",
+    "pages/**/*",
+    "lib/**/*",
+    "styles/**/*",
+    "public/**/*",
+    "next.config.js",
+    "tailwind.config.js",
+    "README.md"
+  ],
+  "keywords": [
+    "landing-page",
+    "marketing",
+    "conversion",
+    "nextjs",
+    "template"
+  ]
+}

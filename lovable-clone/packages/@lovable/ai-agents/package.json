@@ -1,0 +1,35 @@
+{
+  "name": "@lovable/ai-agents",
+  "version": "1.0.0",
+  "description": "Multi-agent AI system for specialized code generation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@lovable/generator": "workspace:*",
+    "@anthropic-ai/sdk": "^0.61.0",
+    "openai": "^4.28.0",
+    "langchain": "^0.1.25",
+    "zod": "^3.23.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@lovable/tsconfig": "workspace:*",
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.8",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

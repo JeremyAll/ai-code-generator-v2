@@ -40,15 +40,10 @@ export class StreamingHandler {
   // Configuration par modèle pour optimiser performance
   getModelConfig(model) {
     const configs = {
-      'claude-3-haiku-20240307': {
+      'claude-3-5-haiku-20241022': {
         maxTokens: 2000,
         temperature: 0.7,
         complexity: 'simple'
-      },
-      'claude-3-5-sonnet-20241022': {
-        maxTokens: 8000,
-        temperature: 0.7,
-        complexity: 'detailed'
       },
       'claude-sonnet-4-20250514': {
         maxTokens: 12000,
@@ -57,7 +52,7 @@ export class StreamingHandler {
       }
     };
 
-    return configs[model] || configs['claude-3-5-sonnet-20241022'];
+    return configs[model] || configs['claude-sonnet-4-20250514'];
   }
 
   compressPrompt(prompt) {

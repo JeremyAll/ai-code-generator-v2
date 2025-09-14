@@ -1,0 +1,40 @@
+{
+  "name": "@lovable/web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Next.js 14 App Router interface for Lovable",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next dist"
+  },
+  "dependencies": {
+    "@lovable/generator": "workspace:*",
+    "@lovable/ui": "workspace:*",
+    "@lovable/editor": "workspace:*",
+    "@lovable/templates": "workspace:*",
+    "@lovable/analytics": "workspace:*",
+    "next": "14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@next/font": "14.2.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.3.0",
+    "framer-motion": "^11.0.0",
+    "socket.io-client": "^4.7.0"
+  },
+  "devDependencies": {
+    "@lovable/tsconfig": "workspace:*",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.4.0"
+  }
+}

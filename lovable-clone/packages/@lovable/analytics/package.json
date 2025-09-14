@@ -1,0 +1,32 @@
+{
+  "name": "@lovable/analytics",
+  "version": "1.0.0",
+  "description": "Analytics, tracking, and metrics collection",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.2.2",
+    "@sentry/node": "^7.108.0",
+    "posthog-js": "^1.116.0",
+    "mixpanel-browser": "^2.50.0"
+  },
+  "devDependencies": {
+    "@lovable/tsconfig": "workspace:*",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@lovable/sandbox-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WebContainers service for live code execution",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "tsx src/main.ts",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@lovable/sandbox": "workspace:*",
+    "@webcontainer/api": "^1.1.9",
+    "express": "^4.19.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@lovable/tsconfig": "workspace:*",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/compression": "^1.7.5",
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.8",
+    "@types/ws": "^8.5.10",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}

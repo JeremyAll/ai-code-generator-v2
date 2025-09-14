@@ -1,0 +1,31 @@
+{
+  "name": "@lovable/templates",
+  "version": "1.0.0",
+  "description": "50+ pre-built application templates",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@lovable/generator": "workspace:*",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@lovable/tsconfig": "workspace:*",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ]
+}
