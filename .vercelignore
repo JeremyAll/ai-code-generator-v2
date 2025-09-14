@@ -1,0 +1,33 @@
+# Ignore l'ancien projet Supabase
+app-generator/
+
+# Ignore les packages non utilisés
+packages/
+
+# Ignore les templates
+templates/
+
+# Ignore les fichiers de test à la racine
+baml-test/
+test*.js
+test-*.js
+test*.html
+
+# Ignore les backups
+_backup/
+*.backup
+
+# Ignore les autres dossiers de développement
+next-example/
+lovable-clone/
+data/jobs/
+
+# Ignore les fichiers de développement
+api-server.js
+client-*.html
+migrate-*.js
+*.bat
+
+# Keep only what's needed for deployment:
+# app/, src/, package.json, next.config.js, tailwind.config.js, postcss.config.js
+# et les autres fichiers Next.js à la racine seront utilisés
