@@ -6,11 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "server": "node api-server.js",
-    "client": "start client-example.html",
-    "test:simple": "node test-simple.js",
-    "test:queue": "node test-queue.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "14.0.0",
@@ -19,15 +15,7 @@
     "@anthropic-ai/sdk": "^0.24.3",
     "tailwindcss": "^3.4.0",
     "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.31",
-    "@webcontainer/api": "^1.6.1",
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "socket.io": "^4.5.4",
-    "uuid": "^9.0.0",
-    "dotenv": "^16.4.5",
-    "chalk": "^5.3.0",
-    "fs-extra": "^11.3.1"
+    "postcss": "^8.4.31"
   },
   "devDependencies": {
     "eslint": "^8",
